@@ -1,0 +1,17 @@
+html, body{
+  padding: 0px;
+  margin: 0px;
+}
+
+.menu {
+  display:flex;
+  max-width: 100%;
+  height: auto
+}
+.frame{
+  display:inline-block;
+  width: 50%
+}
+img{
+  width: 100%
+}
