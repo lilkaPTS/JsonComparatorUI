@@ -6,10 +6,10 @@
 
 <div class="menu">
   <div class="frame">
-    <pre *ngFor="let val of json1.split('\n');" [innerHTML] = "highlightKeyWord(val, str)"></pre>
+    <pre *ngFor="let val of responseEntity.configFile1.toString().split('\n');"></pre>
   </div>
   <div class="frame">
-    <pre *ngFor="let val of json2.split('\n');">{{val}}</pre>
+    <pre *ngFor="let val of responseEntity.configFile2.toString().split('\n');">{{val}}</pre>
   </div>
 </div>
 <p [innerHTML]="highlightKeyWord('hello world', 'world')"></p>

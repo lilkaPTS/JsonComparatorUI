@@ -4,6 +4,7 @@ import {Observable, Subscription} from "rxjs";
 import {JsonPipe} from "@angular/common";
 import {CommonModule} from "@angular/common";
 import {DomSanitizer} from "@angular/platform-browser";
+import {ResponseObject} from "./responseObject";
 
 @Component({
   selector: 'app-root',
@@ -21,6 +22,8 @@ export class AppComponent {
 
   json1: string = "";
   json2: string = "";
+
+  responseEntity: ResponseObject = new ResponseObject(new Array<string>(), "", "", new Array<string>());
 
   counter1: number = 0;
   counter2: number = 0;
@@ -54,9 +57,8 @@ export class AppComponent {
 
   click(): void {
     this.upload().subscribe((data:any) => {
-      this.json1 = data[0];
-      this.json2 = data[1];
-      console.log(JSON.parse(this.json1).artifacts[0].mvn[0].groupId)
+      this.responseEntity = data;
+      //console.log(JSON.parse(this.json1).artifacts[0].mvn[0].groupId)
     });
 
   }
