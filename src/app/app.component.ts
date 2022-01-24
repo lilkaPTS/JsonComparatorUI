@@ -1,13 +1,15 @@
-import {Component} from '@angular/core';
+import {Component, ViewEncapsulation} from '@angular/core';
 import {HttpClient, HttpEvent, HttpRequest, HttpResponse} from "@angular/common/http";
 import {Observable, Subscription} from "rxjs";
 import {JsonPipe} from "@angular/common";
 import {CommonModule} from "@angular/common";
+import {DomSanitizer} from "@angular/platform-browser";
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./app.component.css'],
+  encapsulation: ViewEncapsulation.None,
 })
 export class AppComponent {
   title = 'JsonParserUI';
@@ -20,7 +22,12 @@ export class AppComponent {
   json1: string = "";
   json2: string = "";
 
-  constructor(private http: HttpClient) {
+  counter1: number = 0;
+  counter2: number = 0;
+
+  str: string = '"sha1" : "749d65718qwec394eae890e7137898419b48b021"';
+
+  constructor(private http: HttpClient, private sanitized: DomSanitizer) {
   }
 
   selectFile(event: any): void {
@@ -31,10 +38,25 @@ export class AppComponent {
     }
   }
 
+  highlightKeyWord(sentence: string, keyWord: string) {
+    sentence = sentence.replace(keyWord,
+      `<span class="red">${keyWord}</span>`);
+    return this.sanitized.bypassSecurityTrustHtml(sentence);
+  }
+
+  jsonWalker(jsonString: string) {
+    console.log(JSON.parse(jsonString).metadata.description.version);
+  }
+
+  getIndex (str: string, word: string): number {
+    return str.indexOf(word);
+  }
+
   click(): void {
     this.upload().subscribe((data:any) => {
       this.json1 = data[0];
       this.json2 = data[1];
+      console.log(JSON.parse(this.json1).artifacts[0].mvn[0].groupId)
     });
 
   }

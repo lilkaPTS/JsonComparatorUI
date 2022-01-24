@@ -5,7 +5,6 @@ import { AppComponent } from './app.component';
 import {HttpClientModule} from "@angular/common/http";
 import {FormsModule} from "@angular/forms";
 import {CommonModule, JsonPipe} from "@angular/common";
-
 @NgModule({
   declarations: [
     AppComponent

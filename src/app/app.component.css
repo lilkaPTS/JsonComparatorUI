@@ -12,6 +12,6 @@ html, body{
   display:inline-block;
   width: 50%
 }
-img{
-  width: 100%
+.red {
+  color: red;
 }
