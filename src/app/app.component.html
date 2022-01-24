@@ -4,12 +4,15 @@
        (change)="selectFile($event)">
 <button type="submit" (click)="click()">submit</button>
 
-<div class="menu">
-  <div class="frame">
-    <pre *ngFor="let val of responseEntity.configFile1.toString().split('\n');"></pre>
-  </div>
-  <div class="frame">
-    <pre *ngFor="let val of responseEntity.configFile2.toString().split('\n');">{{val}}</pre>
-  </div>
-</div>
-<p [innerHTML]="highlightKeyWord('hello world', 'world')"></p>
+<!--<div class="menu">-->
+<!--  <div class="frame">-->
+<!--    <pre [innerHTML]="responseEntity.configFile1"></pre>-->
+<!--  </div>-->
+<!--  <div class="frame">-->
+<!--    <pre [innerHTML]="highlightKeyWord(responseEntity.configFile2, responseEntity.metadata[0])"></pre>-->
+<!--  </div>-->
+<!--</div>-->
+<!--<p [innerHTML]="highlightKeyWord('hello world', 'world')"></p>-->
+
+
+<pre [innerHTML]="responseEntity.configFile2"></pre>

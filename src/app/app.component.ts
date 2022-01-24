@@ -1,10 +1,11 @@
-import {Component, ViewEncapsulation} from '@angular/core';
+import {Component,  ViewEncapsulation} from '@angular/core';
 import {HttpClient, HttpEvent, HttpRequest, HttpResponse} from "@angular/common/http";
 import {Observable, Subscription} from "rxjs";
 import {JsonPipe} from "@angular/common";
 import {CommonModule} from "@angular/common";
 import {DomSanitizer} from "@angular/platform-browser";
 import {ResponseObject} from "./responseObject";
+import {resourceChangeTicket} from "@angular/compiler-cli/src/ngtsc/core";
 
 @Component({
   selector: 'app-root',
@@ -20,15 +21,9 @@ export class AppComponent {
   file1: File| null = null;
   file2: File| null = null;
 
-  json1: string = "";
-  json2: string = "";
+  str: string = '"version" : 4';
 
-  responseEntity: ResponseObject = new ResponseObject(new Array<string>(), "", "", new Array<string>());
-
-  counter1: number = 0;
-  counter2: number = 0;
-
-  str: string = '"sha1" : "749d65718qwec394eae890e7137898419b48b021"';
+  responseEntity: ResponseObject = new ResponseObject(new Array<string>(), "asd", "dsa", new Array<string>());
 
   constructor(private http: HttpClient, private sanitized: DomSanitizer) {
   }
@@ -41,14 +36,24 @@ export class AppComponent {
     }
   }
 
-  highlightKeyWord(sentence: string, keyWord: string) {
-    sentence = sentence.replace(keyWord,
-      `<span class="red">${keyWord}</span>`);
+  highlightKeyWord(sentence: string, keyWord: string[]) {
+    for (let i = 0; i < keyWord.length; i++) {
+      sentence = sentence.replace(keyWord[i],
+        `<span class="red">${keyWord[i]}</span>`);
+    }
     return this.sanitized.bypassSecurityTrustHtml(sentence);
   }
 
+  highlightKeyWordSimple(sentence: string, keyWord: string[]) {
+    for (let i = 0; i < keyWord.length; i++) {
+      sentence = sentence.replace(keyWord[i],
+        `<span class="red">${keyWord[i]}</span>`);
+    }
+    return sentence;
+  }
+
   jsonWalker(jsonString: string) {
-    console.log(JSON.parse(jsonString).metadata.description.version);
+    console.log(JSON.parse(jsonString).metadata)
   }
 
   getIndex (str: string, word: string): number {
@@ -58,6 +63,16 @@ export class AppComponent {
   click(): void {
     this.upload().subscribe((data:any) => {
       this.responseEntity = data;
+      console.log(JSON.stringify(JSON.parse(this.responseEntity.configFile2).metadata))
+
+      this.responseEntity.configFile2 = this.responseEntity.configFile2.replace(JSON.stringify(JSON.parse(this.responseEntity.configFile2).metadata),
+        this.highlightKeyWordSimple(JSON.stringify(JSON.parse(this.responseEntity.configFile2).metadata), this.responseEntity.metadata));
+      this.responseEntity.configFile2 = JSON.stringify(this.responseEntity.configFile2, null, 2);
+      console.log(this.responseEntity.configFile2);
+      //console.log(JSON.stringify(JSON.parse(this.responseEntity.configFile2).metadata));
+      //this.responseEntity.configFile2 = this.responseEntity.configFile2.replace(JSON.stringify(JSON.parse(this.responseEntity.configFile2).metadata), "{fdsf}");
+      //this.responseEntity.configFile1 = JSON.stringify(this.responseEntity.configFile1, null, 2);
+      //this.responseEntity.configFile2 = JSON.stringify(this.responseEntity.configFile2, null, 2);
       //console.log(JSON.parse(this.json1).artifacts[0].mvn[0].groupId)
     });
 
