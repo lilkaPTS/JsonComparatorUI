@@ -1,17 +1,15 @@
-import {Component,  ViewEncapsulation} from '@angular/core';
+import {Component} from '@angular/core';
 import {HttpClient, HttpEvent, HttpRequest, HttpResponse} from "@angular/common/http";
 import {Observable, Subscription} from "rxjs";
 import {JsonPipe} from "@angular/common";
 import {CommonModule} from "@angular/common";
 import {DomSanitizer} from "@angular/platform-browser";
 import {ResponseObject} from "./responseObject";
-import {resourceChangeTicket} from "@angular/compiler-cli/src/ngtsc/core";
-
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  encapsulation: ViewEncapsulation.None,
+  //encapsulation: ViewEncapsulation.None,
 })
 export class AppComponent {
   title = 'JsonParserUI';
