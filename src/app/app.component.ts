@@ -1,15 +1,15 @@
-import {Component} from '@angular/core';
+import {Component, ViewEncapsulation} from '@angular/core';
 import {HttpClient, HttpEvent, HttpRequest, HttpResponse} from "@angular/common/http";
 import {Observable, Subscription} from "rxjs";
 import {JsonPipe} from "@angular/common";
 import {CommonModule} from "@angular/common";
-import {DomSanitizer} from "@angular/platform-browser";
+import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 import {ResponseObject} from "./responseObject";
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  //encapsulation: ViewEncapsulation.None,
+  encapsulation: ViewEncapsulation.None,
 })
 export class AppComponent {
   title = 'JsonParserUI';
@@ -21,9 +21,9 @@ export class AppComponent {
 
   str: string = '"version" : 4';
 
-  responseEntity: ResponseObject = new ResponseObject(new Array<string>(), "asd", "dsa", new Array<string>());
+  responseEntity: ResponseObject = new ResponseObject(new Array<string>(), "", "", new Array<string>());
 
-  constructor(private http: HttpClient, private sanitized: DomSanitizer) {
+  constructor(private http: HttpClient, public sanitized: DomSanitizer) {
   }
 
   selectFile(event: any): void {
@@ -61,19 +61,23 @@ export class AppComponent {
   click(): void {
     this.upload().subscribe((data:any) => {
       this.responseEntity = data;
-      console.log(JSON.stringify(JSON.parse(this.responseEntity.configFile2).metadata))
 
+      //metadata
       this.responseEntity.configFile2 = this.responseEntity.configFile2.replace(JSON.stringify(JSON.parse(this.responseEntity.configFile2).metadata),
         this.highlightKeyWordSimple(JSON.stringify(JSON.parse(this.responseEntity.configFile2).metadata), this.responseEntity.metadata));
-      this.responseEntity.configFile2 = JSON.stringify(this.responseEntity.configFile2, null, 2);
-      console.log(this.responseEntity.configFile2);
-      //console.log(JSON.stringify(JSON.parse(this.responseEntity.configFile2).metadata));
-      //this.responseEntity.configFile2 = this.responseEntity.configFile2.replace(JSON.stringify(JSON.parse(this.responseEntity.configFile2).metadata), "{fdsf}");
-      //this.responseEntity.configFile1 = JSON.stringify(this.responseEntity.configFile1, null, 2);
-      //this.responseEntity.configFile2 = JSON.stringify(this.responseEntity.configFile2, null, 2);
-      //console.log(JSON.parse(this.json1).artifacts[0].mvn[0].groupId)
-    });
 
+      this.responseEntity.configFile1 = this.replaceToUglyJson(this.responseEntity.configFile1);
+      this.responseEntity.configFile2 = this.replaceToUglyJson(this.responseEntity.configFile2);
+
+    });
+  }
+
+  replaceToUglyJson(str: string): string {
+    str = str.replace(/{/g, "{\n");
+    str = str.replace(/}/g, "\n}");
+    str = str.replace(/\[/g, "[\n");
+    str = str.replace(/,/g, ",\n");
+    return str;
   }
 
   upload(){
