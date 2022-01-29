@@ -5,6 +5,7 @@ import {JsonPipe} from "@angular/common";
 import {CommonModule} from "@angular/common";
 import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 import {ResponseObject} from "./responseObject";
+import {ResponseView} from "./responseView";
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -19,9 +20,7 @@ export class AppComponent {
   file1: File| null = null;
   file2: File| null = null;
 
-  str: string = '"version" : 4';
-
-  responseEntity: ResponseObject = new ResponseObject(new Array<string>(), "", "", new Array<string>());
+  responseEntity: ResponseObject = new ResponseObject(new Array<string>(), new ResponseView(new Array<string>(), new Array<string>()));
 
   constructor(private http: HttpClient, public sanitized: DomSanitizer) {
   }
@@ -61,14 +60,6 @@ export class AppComponent {
   click(): void {
     this.upload().subscribe((data:any) => {
       this.responseEntity = data;
-
-      //metadata
-      this.responseEntity.configFile2 = this.responseEntity.configFile2.replace(JSON.stringify(JSON.parse(this.responseEntity.configFile2).metadata),
-        this.highlightKeyWordSimple(JSON.stringify(JSON.parse(this.responseEntity.configFile2).metadata), this.responseEntity.metadata));
-
-      this.responseEntity.configFile1 = this.replaceToUglyJson(this.responseEntity.configFile1);
-      this.responseEntity.configFile2 = this.replaceToUglyJson(this.responseEntity.configFile2);
-
     });
   }
 
@@ -78,6 +69,21 @@ export class AppComponent {
     str = str.replace(/\[/g, "[\n");
     str = str.replace(/,/g, ",\n");
     return str;
+  }
+
+  fin(str: string): string {
+    var s1 = str.replace(new RegExp(`(\\{)|(\\()|(\\[)`,'g'),'$1$2$3\n');
+    var s2 = s1.replace(new RegExp(`(\\})|(\\))|(\\])`,'g'),'$1$2$3\n');
+    var s3 = s2.replace(new RegExp(',','g'),',\n');
+    var tokens = s3.split('\n');
+    var offsets: string[] = [];
+    var index=0;
+    var offets = (tokens).forEach((token)=>{
+      offsets.push('\t'.repeat(index)+token.trim());
+      if (token.match('[\\{|\\(|\\[]')){index++};
+      if (token.match('[\\}|\\)|\\]]')){index--};
+    })
+    return offsets.join('\n')
   }
 
   upload(){

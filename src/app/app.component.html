@@ -6,10 +6,10 @@
 
 <div class="menu">
   <div class="frame">
-    <pre *ngFor="let val of responseEntity.configFile1.split('\n')" [innerHTML]="val"></pre>
+    <pre [ngClass]="val.split('---color:')[1]" *ngFor="let val of responseEntity.responseView.configFile1" [innerHTML]="val"></pre>
   </div>
   <div class="frame">
-    <pre *ngFor="let val of responseEntity.configFile2.split('\n')" [innerHTML]="val"></pre>
+    <pre [ngClass]="val.split('---color:')[1]" *ngFor="let val of responseEntity.responseView.configFile2" [innerHTML]="val"></pre>
   </div>
 </div>
 
