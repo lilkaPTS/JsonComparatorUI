@@ -1,16 +1,47 @@
-<input type="file" name="file1" id="file1" accept="application/json"
-       (change)="selectFile($event)">
-<input type="file" name="file2" id="file2" accept="application/json"
-       (change)="selectFile($event)">
-<button type="submit" (click)="click()">submit</button>
-
-<div class="menu">
-  <div class="frame">
-    <pre [ngClass]="val.split('---color:')[1]" *ngFor="let val of responseEntity.responseView.configFile1" [innerHTML]="val"></pre>
-  </div>
-  <div class="frame">
-    <pre [ngClass]="val.split('---color:')[1]" *ngFor="let val of responseEntity.responseView.configFile2" [innerHTML]="val"></pre>
+<div class="container-xxl">
+  <div class="row">
+    <div class="col"></div>
+    <div class="col-6">
+      <div class="input-group">
+        <input #inputFile class="form-control" type="file" id="formFileMultiple" multiple (change)="selectFile($event)">
+        <button class="btn btn-outline-secondary" (click)="click()" type="button">Execute</button>
+      </div>
+    </div>
+    <div class="col"></div>
   </div>
 </div>
 
+<div *ngIf="responseEntity.errors.length !=0" class="container-xxl">
+  <div class="row">
+    <div class="col"></div>
+    <div class="col-6">
+      <div *ngFor="let value of responseEntity.errors" [innerHTML]="value"></div>
+    </div>
+    <div class="col"></div>
+  </div>
+</div>
 
+<div *ngIf="indexes.length !=0 && responseEntity.errors.length == 0" class="table-responsive">
+  <table class="table">
+    <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">Config file №1:</th>
+      <th scope="col">Config file №2:</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let index of indexes">
+      <th [innerHTML]="index"></th>
+      <td>
+        <pre [ngClass]="responseEntity.responseView.configFile1[index].split('-&#45;&#45;color:')[1]"
+             [innerHTML]="responseEntity.responseView.configFile1[index].split('-&#45;&#45;color:')[0]"></pre>
+      </td>
+      <td>
+        <pre [ngClass]="responseEntity.responseView.configFile2[index].split('-&#45;&#45;color:')[1]"
+             [innerHTML]="responseEntity.responseView.configFile2[index].split('-&#45;&#45;color:')[0]"></pre>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

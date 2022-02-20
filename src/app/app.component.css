@@ -17,3 +17,12 @@ html, body{
 }
 .NoN {
 }
+.yellow {
+  color: gold;
+}
+.blue {
+  color: blue;
+}
+pre{
+  margin: 0;
+}

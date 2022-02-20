@@ -1,4 +1,4 @@
-import {Component, ViewEncapsulation} from '@angular/core';
+import {Component, ElementRef, ViewChild, ViewEncapsulation} from '@angular/core';
 import {HttpClient, HttpEvent, HttpRequest, HttpResponse} from "@angular/common/http";
 import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
 import {ResponseObject} from "./responseObject";
@@ -16,6 +16,9 @@ export class AppComponent {
 
   file1: File| null = null;
   file2: File| null = null;
+  files: FileList|null = null;
+  @ViewChild('inputFile') myInputVariable: ElementRef | null = null;
+  indexes: Array<number> = new Array<number>();
 
   responseEntity: ResponseObject = new ResponseObject(new Array<string>(), new ResponseView(new Array<string>(), new Array<string>()));
 
@@ -23,11 +26,7 @@ export class AppComponent {
   }
 
   selectFile(event: any): void {
-    if(this.file1 == null) {
-      this.file1 = event.target.files.item(0);
-    } else {
-      this.file2 = event.target.files.item(0);
-    }
+    this.files = event.target.files;
   }
 
   getIndex (str: string, word: string): number {
@@ -35,16 +34,27 @@ export class AppComponent {
   }
 
   click(): void {
-    this.upload().subscribe((data:any) => {
-      this.responseEntity = data;
-    });
+    if(this.files?.length == 2) {
+      this.upload().subscribe((data:any) => {
+        this.responseEntity = data;
+        this.indexes = new Array<number>();
+        for (let i = 0; i < this.responseEntity.responseView.configFile1.length; i++) {
+          this.indexes.push(i);
+        }
+      });
+    } else {
+      console.log("Critical error!!!");
+      if (this.myInputVariable) {
+        this.myInputVariable.nativeElement.value = '';
+      }
+    }
   }
 
   upload(){
-    const formData: FormData = new FormData();
-    if(this.file1 != null && this.file2 != null) {
-      formData.append('file1', this.file1);
-      formData.append('file2', this.file2);
+    let formData: FormData = new FormData();
+    if(this.files != null) {
+      formData.append('file1', this.files[0]);
+      formData.append('file2', this.files[1]);
     }
     return this.http.post(`${this.baseUrl}/test`, formData);
   }
