@@ -14,12 +14,10 @@ export class AppComponent {
 
   private baseUrl = 'http://localhost:8080';
 
-  file1: File| null = null;
-  file2: File| null = null;
   files: FileList|null = null;
   @ViewChild('inputFile') myInputVariable: ElementRef | null = null;
   indexes: Array<number> = new Array<number>();
-
+  responseCheckEntity: ResponseObject = new ResponseObject(new Array<string>(), new ResponseView(new Array<string>(), new Array<string>()));
   responseEntity: ResponseObject = new ResponseObject(new Array<string>(), new ResponseView(new Array<string>(), new Array<string>()));
 
   constructor(private http: HttpClient) {
@@ -27,6 +25,23 @@ export class AppComponent {
 
   selectFile(event: any): void {
     this.files = event.target.files;
+    if(this.files?.length == 2) {
+      this.upload().subscribe((data:any) => {
+        this.responseCheckEntity = data;
+      });
+    } else {
+      this.responseCheckEntity.errors.push("The service can only work with two json files!!!");
+    }
+  }
+
+  clearData(): void {
+    this.files = null;
+    this.responseCheckEntity = new ResponseObject(new Array<string>(), new ResponseView(new Array<string>(), new Array<string>()));
+    this.responseEntity = new ResponseObject(new Array<string>(), new ResponseView(new Array<string>(), new Array<string>()));
+    this.indexes = new Array<number>();
+    if (this.myInputVariable) {
+      this.myInputVariable.nativeElement.value = '';
+    }
   }
 
   getIndex (str: string, word: string): number {
@@ -34,19 +49,10 @@ export class AppComponent {
   }
 
   click(): void {
-    if(this.files?.length == 2) {
-      this.upload().subscribe((data:any) => {
-        this.responseEntity = data;
-        this.indexes = new Array<number>();
-        for (let i = 0; i < this.responseEntity.responseView.configFile1.length; i++) {
-          this.indexes.push(i);
-        }
-      });
-    } else {
-      console.log("Critical error!!!");
-      if (this.myInputVariable) {
-        this.myInputVariable.nativeElement.value = '';
-      }
+    this.responseEntity = this.responseCheckEntity;
+    this.indexes = new Array<number>();
+    for (let i = 0; i < this.responseEntity.responseView.configFile1.length; i++) {
+      this.indexes.push(i);
     }
   }
 
