@@ -1,6 +1,5 @@
 import {Component, ElementRef, ViewChild, ViewEncapsulation} from '@angular/core';
-import {HttpClient, HttpEvent, HttpRequest, HttpResponse} from "@angular/common/http";
-import {DomSanitizer, SafeHtml} from "@angular/platform-browser";
+import {HttpClient} from "@angular/common/http";
 import {ResponseObject} from "./responseObject";
 import {ResponseView} from "./responseView";
 @Component({
@@ -27,6 +26,7 @@ export class AppComponent {
     this.files = event.target.files;
     if(this.files?.length == 2) {
       this.upload().subscribe((data:any) => {
+        console.log(data);
         this.responseCheckEntity = data;
       });
     } else {
@@ -62,6 +62,6 @@ export class AppComponent {
       formData.append('file1', this.files[0]);
       formData.append('file2', this.files[1]);
     }
-    return this.http.post(`${this.baseUrl}/test`, formData);
+    return this.http.post(`${this.baseUrl}/validating`, formData);
   }
 }
